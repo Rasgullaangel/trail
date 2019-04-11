@@ -1,0 +1,330 @@
+redis:salvatore sanfilippo(developer)
+redis.io:website
+1.remote dictionary server--->redis stands
+   key-value,
+2.no-SQL databse
+3.uses DS datatype:
+    *string,*list,*sets,*sortedset,*hashes--->primary,
+    *bitmaps,*hyperloglogs,*geopatial inexes---> 
+4.command base(redis.io/commands)-->link
+5.in-memory db(makes faster)
+______________________________________________________________________________________
+Adv:
+1.flexible
+2.no schemas & column name
+3.very fast:110000 sets/seconds,81000 gets/seconds
+4.rich datatype support
+5.caching & Disk persistence
+____________________________________________________________________________________
+download link:
+https://github.com/MicrosoftArchive/redis/releases
+cmd:
+pip install redis
+cmd--->redis-cli
+__________________________________________
+>>> import redis
+>>> r_server=redis.Redis("localhost")
+__________________________________________
+key value pair:
+>>> r_server.set("name","pooja")
+True
+>>> r_server.get("name")
+'pooja'
+__________________________________
+count increament
+>>> r_server.incr("count",1)
+1
+>>> r_server.set("count",1)
+True
+>>> r_server.incr("count")
+2
+>>> r_server.decr("count")
+1
+_______________________________________________________________
+list length:
+> r_server.rpush("nums","two")
+1L
+>>> r_server.rpush("nums","one")
+2L
+>>> r_server.rpush("nums","three")
+3L
+>>> r_server.llen("nums")
+3
+____________________________________________________________________________
+index:
+ r_server.lindex("nums",2)
+'three'
+>>> r_server.lindex("nums",0)
+'two'
+>>> r_server.lindex("nums",3)
+>>>
+_____________________________________________________________________
+cmd--->redis-cli
+127.0.0.1:6379> keys *
+1) "count"
+2) "nums"
+3) "name"
+C:\Users\senthilnathanp>redis-cli
+127.0.0.1:6379> keys *
+1) "count"
+2) "nums"
+3) "name"
+127.0.0.1:6379> set rasgulla ajith
+OK
+127.0.0.1:6379> keys *
+1) "count"
+2) "nums"
+3) "name"
+4) "rasgulla"
+127.0.0.1:6379> get rasgulla
+"ajith"
+127.0.0.1:6379> del rasgulla
+(integer) 1
+127.0.0.1:6379> keys *
+1) "count"
+2) "nums"
+3) "name"
+127.0.0.1:6379>
+______________________________________________________
+deleting all :
+127.0.0.1:6379> flushall
+OK
+127.0.0.1:6379> keys *
+(empty list or set)
+127.0.0.1:6379>
+______________________________________________________________
+duration of variable:
+127.0.0.1:6379> setex name ajith
+OK
+127.0.0.1:6379> get name
+"ajith"
+127.0.0.1:6379> ttl name---->time to leave
+(integer) 4
+127.0.0.1:6379> ttl name
+(integer) -2
+127.0.0.1:6379> get name
+(nil)
+_________________________________________________________________
+overwritting:setnx:
+127.0.0.1:6379> set name 'pooja'
+OK
+127.0.0.1:6379> get name
+"pooja"
+127.0.0.1:6379> set name 'senthilnathan'
+OK
+127.0.0.1:6379> get name
+"senthilnathan"
+127.0.0.1:6379> setnx name 'poojasenthil'
+(integer) 0
+127.0.0.1:6379> get name
+"senthilnathan"
+127.0.0.1:6379> setnx name1 'month'
+(integer) 1
+127.0.0.1:6379> keys *
+1) "name"
+2) "name1"
+____________________________________________________________________________________
+string length:
+127.0.0.1:6379> get name1
+"month"
+127.0.0.1:6379> strlen name1
+(integer) 5
+___________________________________________________________________________
+adding of multiple variable :
+127.0.0.1:6379> mset num1 10 num2 60 num2 100
+OK
+127.0.0.1:6379> keys *
+1) "num2"
+2) "num1"
+3) "name"
+4) "name1"
+127.0.0.1:6379> get num2
+"100"
+127.0.0.1:6379> mset num3 200
+OK
+127.0.0.1:6379> keys *
+1) "num3"
+2) "num2"
+3) "num1"
+4) "name"
+5) "name1"
+___________________________________________________________________________________________
+psetex------>milliseconds
+decr & incr ------>keys
+127.0.0.1:6379> set nums 40
+OK
+127.0.0.1:6379> get nums
+"40"
+127.0.0.1:6379> decr nums
+(integer) 39
+127.0.0.1:6379> incr nums
+(integer) 40
+127.0.0.1:6379> incrby nums 10
+(integer) 50
+127.0.0.1:6379> decrby nums 5
+(integer) 45
+127.0.0.1:6379>
+______________________________________________________________________________
+append:
+127.0.0.1:6379> set ras "hello"
+OK
+127.0.0.1:6379> get ras
+"hello"
+127.0.0.1:6379> append ras "world"
+(integer) 10
+127.0.0.1:6379> get ras
+"helloworld"
+127.0.0.1:6379> append ras " pooja"
+(integer) 16
+127.0.0.1:6379> get ras
+"helloworld pooja"
+____________________________________________________________________________________________
+ hashes:
+127.0.0.1:6379> HMSET user:1 username tutorialspoint password tutorialspoint points 200
+OK
+127.0.0.1:6379> HGETALL user:1
+1) "username"
+2) "tutorialspoint"
+3) "password"
+4) "tutorialspoint"
+5) "points"
+6) "200"
+127.0.0.1:6379> HGET USER:!
+(error) ERR wrong number of arguments for 'hget' command
+127.0.0.1:6379> HGET user:1
+(error) ERR wrong number of arguments for 'hget' command
+127.0.0.1:6379> hget user:1 username
+"tutorialspoint"
+127.0.0.1:6379> hmset ajith playboy yes rowdy yes poriki yes
+OK
+127.0.0.1:6379> hgetall
+(error) ERR wrong number of arguments for 'hgetall' command
+127.0.0.1:6379> hgetall ajith
+1) "playboy"
+2) "yes"
+3) "rowdy"
+4) "yes"
+5) "poriki"
+6) "yes"
+127.0.0.1:6379> hget ajith poriki------>can give more than one fields
+"yes"
+127.0.0.1:6379> hget ajith yes
+(nil)
+127.0.0.1:6379>
+___________________________________________________________________________________
+exists & deleting in hashes:
+
+127.0.0.1:6379> hexists ajith
+(error) ERR wrong number of arguments for 'hexists' command
+127.0.0.1:6379> hexists ajith playboy
+(integer) 1
+127.0.0.1:6379> hgetall ajith
+1) "playboy"
+2) "yes"
+3) "rowdy"
+4) "yes"
+5) "poriki"
+6) "yes"
+127.0.0.1:6379> hdel ajith playboy
+(integer) 1
+127.0.0.1:6379> hgetall ajith
+1) "rowdy"
+2) "yes"
+3) "poriki"
+4) "yes"
+
+127.0.0.1:6379> hsetnx key field value
+hsetnx------>checks wheather the field is already exists if not create a new field
+127.0.0.1:6379> hsetnx ajith rowdy no
+(integer) 0
+127.0.0.1:6379> hgetall ajith
+1) "rowdy"
+2) "yes"
+3) "poriki"
+4) "yes"
+127.0.0.1:6379> hsetnx ajith color black
+(integer) 1
+127.0.0.1:6379> hgetall ajith
+1) "rowdy"
+2) "yes"
+3) "poriki"
+4) "yes"
+5) "color"
+6) "black"
+
+
+127.0.0.1:6379> hkeys ajith----->displays only the feilds
+1) "rowdy"       hvals ajith----->displays only the values
+2) "poriki"      hlen ajith------->displays the number of field
+3) "color"
+
+increament and decreament in hashes:
+127.0.0.1:6379> hmset stud-1 name pooja age 15 class 10
+OK
+127.0.0.1:6379> hgetall stud-1
+1) "name"
+2) "pooja"
+3) "age"
+4) "15"
+5) "class"
+6) "10"
+
+127.0.0.1:6379> hincrby stud-1 age 2
+(integer) 17
+127.0.0.1:6379> hgetall stud-1
+1) "name"
+2) "pooja"
+3) "age"
+4) "17"
+5) "class"
+6) "10"
+__________________________________________________________________________________________
+LISTS:head on the top and tail on the head can insert any element either on top or tail
+lpush--->push the element from head(left push)
+eg:
+127.0.0.1:6379> lpush num 1 2 3 4
+(integer) 4
+To see how the elements are stored in the list:
+127.0.0.1:6379> lrange num 0 10
+1) "4"
+2) "3"
+3) "2"
+4) "1"
+push and pop:
+127.0.0.1:6379> lpush num 5
+(integer) 5
+127.0.0.1:6379> lrange num 0 10
+1) "5"
+2) "4"
+3) "3"
+4) "2"
+5) "1"
+127.0.0.1:6379> lpop num
+"5"
+127.0.0.1:6379> lrange num 0 10
+1) "4"
+2) "3"
+3) "2"
+4) "1"
+rpush and rpop----->towards tail
+__________________________________________________________________________________________________________________________________________________
+sets:
+scard--->no of elements in the key
+127.0.0.1:6379> sadd pooja rider bike
+(integer) 2
+127.0.0.1:6379> smembers pooja
+1) "bike"
+2) "rider"
+127.0.0.1:6379> sadd pooja rider
+(integer) 0
+127.0.0.1:6379> scard pooja
+(integer) 2
+_____________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
